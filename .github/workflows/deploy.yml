@@ -1,4 +1,4 @@
-name: Deploy Marlin to GitHub Pages
+name: Deploy Creative Website to GitHub Pages
 
 on:
   push:
