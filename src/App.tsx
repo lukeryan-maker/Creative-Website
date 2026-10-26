@@ -1,66 +1,63 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 
-const PRODUCT = 'https://shop.merch.google/product/google-wellfleet-womens-1-2-zip-ggoegxxx2633'
-const IMAGE = `${import.meta.env.BASE_URL}assets/wellfleet.png`
-const moments = [
-  { time: '08:30 AM', name: 'The coffee run.', text: 'Your favorite denim. A fresh coffee. A navy layer that makes getting out the door the easy part.', tag: 'OFF-DUTY, PUT TOGETHER', style: 'Denim + sneakers', color: 'blue' },
-  { time: '01:00 PM', name: 'The workday.', text: 'Pair it with tailored trousers for a relaxed office look. Zip up the collar or leave it open over a simple tee.', tag: 'FROM DESK TO DOWNTOWN', style: 'Trousers + a white tee', color: 'yellow' },
-  { time: '05:30 PM', name: 'The long way home.', text: 'Take the scenic route. An easy layer for waterfront walks and the plans that happen after your plans.', tag: 'A LITTLE MORE OUTSIDE', style: 'Leggings + walking shoes', color: 'green' },
+const features = [
+  { name: 'Targeted padding.', tag: '01 / THE PLACEMENT', title: 'A little more coverage. Right here.', text: 'The concept places two pads over the collarbone area. Their shape, thickness, and impact performance still need prototype testing.', color: 'blue', label: 'Collarbone pad zones' },
+  { name: 'A considered fit.', tag: '02 / THE FEEL', title: 'Close to the body. Built around movement.', text: 'A compression-style base layer is the starting point. Athlete fit trials will help refine the neckline, sleeves, and how the shirt sits under existing equipment.', color: 'yellow', label: 'Compression-style body' },
+  { name: 'Ready for feedback.', tag: '03 / THE DEVELOPMENT', title: 'Test the details. Then earn the trust.', text: 'Fixed and removable pad options are being considered. Durability, washability, comfort, and independent performance testing will guide the final design.', color: 'green', label: 'Pad construction study' },
 ]
+function Shirt({ selected = 0 }: { selected?: number }) {
+  const id = useId()
+  return <svg className="shirt-diagram" viewBox="0 0 600 600" role="img" aria-label={`Concept sports undershirt: ${features[selected].label}. Illustration, not a manufactured product.`}>
+    <defs><linearGradient id={`${id}-fabric`} x1="0" y1="0" x2="1" y2="1"><stop stopColor="#34464b"/><stop offset="1" stopColor="#101e23"/></linearGradient><pattern id={`${id}-mesh`} width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#ffffff" opacity=".12"/></pattern></defs>
+    <ellipse cx="300" cy="543" rx="168" ry="17" fill="#192c30" opacity=".12"/>
+    <path d="M233 98 L178 117 L78 209 L142 287 L195 247 L182 516 Q300 547 418 516 L405 247 L458 287 L522 209 L422 117 L367 98 Q300 149 233 98Z" fill={`url(#${id}-fabric)`} stroke="#3a5056" strokeWidth="3"/>
+    <path d="M233 98 Q300 149 367 98 L359 122 Q300 165 241 122Z" fill="#0c191e" stroke="#587078" strokeWidth="2"/>
+    <path d="M198 199 L222 300 L213 511 M402 199 L378 300 L387 511" fill="none" stroke={selected===1?'#d5f16d':'#5b777e'} strokeWidth="3" opacity=".7"/>
+    <path d="M222 272 L378 272 L390 503 Q300 520 210 503Z" fill={`url(#${id}-mesh)`}/>
+    <g fill={selected===1?'#8aab89':'#d5f16d'} stroke="#e9ffae" strokeWidth={selected===2?4:2} strokeDasharray={selected===2?'6 5':undefined}>
+      <path d="M203 149 Q228 135 273 163 L267 196 Q230 177 207 184 Q196 171 203 149Z"/>
+      <path d="M397 149 Q372 135 327 163 L333 196 Q370 177 393 184 Q404 171 397 149Z"/>
+    </g>
+    <g stroke="#506a38" opacity=".4"><path d="M218 150 L222 179 M235 152 L239 182 M251 159 L254 188 M382 150 L378 179 M365 152 L361 182 M349 159 L346 188"/></g>
+    <text x="300" y="239" textAnchor="middle" fill="#e4eddd" fontSize="17" fontFamily="sans-serif" fontWeight="800" letterSpacing="5">CLAV</text>
+    <path d="M164 265 L107 200 M436 265 L493 200" stroke="#597078" strokeWidth="2" fill="none"/>
+  </svg>
+}
 export default function App() {
   const [menu, setMenu] = useState(false)
   const [moment, setMoment] = useState(0)
+  const [sport, setSport] = useState('Hockey')
+  const [priority, setPriority] = useState('Fit under equipment')
+  const [saved, setSaved] = useState(false)
   const reduce = useReducedMotion()
   const reveal = { initial: { opacity: 0, y: reduce ? 0 : 24 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: reduce ? 0 : .6 } }
+  function download() {
+    const content = `CLAV / YOUR CONCEPT EXPLORATION\n\nSport: ${sport}\nDesign priority: ${priority}\n\nConcept: A compression-style sports undershirt with padding positioned over the collarbone area.\n\nNext steps: prototype fit trials, compare fixed and removable pads, evaluate washability and durability, and independently test performance.\n\nDevelopment concept by Luke Ryan. No injury-prevention performance has been established. Pricing and availability are not set. This is a local download, not an order or research submission.\n`
+    const url = URL.createObjectURL(new Blob([content], { type: 'text/plain' }))
+    const link = document.createElement('a'); link.href = url; link.download = 'CLAV-concept-brief.txt'; link.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); setSaved(true)
+  }
   return <>
     <a className="skip" href="#main">Skip to content</a>
-    <div className="announcement">A fresh perspective on your everyday layer. <span>Meet the Wellfleet ↗</span></div>
-    <header>
-      <a className="brand" href="#main" aria-label="Wellfleet home"><span className="dots"><i/><i/><i/><i/></span>wellfleet<span className="brand-period">.</span></a>
-      <nav aria-label="Main navigation" className={menu ? 'open' : ''}>
-        <a href="#details" onClick={()=>setMenu(false)}>The half-zip</a><a href="#everyday" onClick={()=>setMenu(false)}>Your everyday</a><a href="#story" onClick={()=>setMenu(false)}>The details</a>
-      </nav>
-      <a className="nav-shop" href={PRODUCT} target="_blank" rel="noreferrer">Shop on Google <span>↗</span></a>
-      <button className="menu-toggle" onClick={()=>setMenu(!menu)} aria-expanded={menu} aria-label={menu ? 'Close navigation' : 'Open navigation'}>{menu ? '✕' : '☰'}</button>
+    <div className="announcement">A new layer of thinking for contact sports. <span>CONCEPT / IN DEVELOPMENT</span></div>
+    <header><a className="brand" href="#main" aria-label="CLAV home"><span className="clav-mark" aria-hidden="true">↗</span>clav<span className="brand-period">.</span></a>
+      <nav aria-label="Main navigation" className={menu?'open':''}><a href="#details" onClick={()=>setMenu(false)}>The concept</a><a href="#everyday" onClick={()=>setMenu(false)}>The design</a><a href="#story" onClick={()=>setMenu(false)}>Our thinking</a></nav>
+      <a className="nav-shop" href="#explore">Make it yours <span>↗</span></a><button className="menu-toggle" onClick={()=>setMenu(!menu)} aria-expanded={menu} aria-label={menu?'Close navigation':'Open navigation'}>{menu?'✕':'☰'}</button>
     </header>
     <main id="main">
       <section className="hero" id="details">
-        <motion.div className="hero-copy" {...reveal}>
-          <p className="eyebrow"><span className="little-line"/> THE WELLFLEET EDIT · NEW YORK, EVERY DAY</p>
-          <h1>Big city.<br/>Full calendar.<br/><span>One easy layer.</span></h1>
-          <p className="intro">For coffee runs, workdays, and whatever comes next. Meet the Google Wellfleet Women’s 1/2 Zip—your navy goes-with-everything.</p>
-          <div className="hero-actions"><a className="button" href={PRODUCT} target="_blank" rel="noreferrer">Meet your everyday half-zip <span>↗</span></a><span className="price">$79 <small>USD</small></span></div>
-          <p className="micro">Original navy. Signature white Google logo.</p>
-          <div className="hero-bottom"><span>01 / EVERYDAY, RECONSIDERED</span><a href="#everyday" aria-label="Explore ways to wear it">SCROLL TO EXPLORE <span>↓</span></a></div>
-        </motion.div>
-        <motion.div className="hero-image" initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.7}}>
-          <div className="image-top"><span>GOOGLE WELLFLEET</span><span>WOMEN’S 1/2 ZIP</span></div>
-          <span className="giant-word" aria-hidden="true">everyday</span>
-          <img src={IMAGE} alt="Original Google Wellfleet Women's half-zip in navy with a white Google logo" fetchPriority="high" width="1500" height="1500"/>
-          <div className="image-bottom"><span><i className="navy-dot"/> NAVY / THE ORIGINAL</span><span className="image-note">Less outfit planning.<br/>More living.</span></div>
-          <span className="orbit" aria-hidden="true">MAKE IT<br/><strong>your day.</strong><span>↗</span></span>
-        </motion.div>
+        <motion.div className="hero-copy" {...reveal}><p className="eyebrow"><span className="little-line"/> CLAV SPORTS / THE FIRST LAYER</p><h1>Big game.<br/>Small details.<br/><span>Every layer counts.</span></h1><p className="intro">Meet a new sports undershirt concept with padding placed over the collarbone. Inspired by hockey. Shaped around the athletes who wear it.</p><div className="hero-actions"><a className="button" href="#everyday">Explore the design <span>↗</span></a><span className="concept-badge">PROTOTYPE<br/>DIRECTION 01</span></div><p className="micro">In development. Performance and fit are not yet validated.</p><div className="hero-bottom"><span>01 / RETHINK THE BASE LAYER</span><a href="#everyday">TAKE A CLOSER LOOK <span>↓</span></a></div></motion.div>
+        <motion.div className="hero-image" initial={{opacity:0}} animate={{opacity:1}} transition={{duration:reduce?0:.7}}><div className="image-top"><span>COLLARBONE PAD CONCEPT</span><span>FRONT VIEW / 001</span></div><span className="giant-word" aria-hidden="true">game on.</span><Shirt/><div className="image-bottom"><span><i className="navy-dot"/> GRAPHITE + SIGNAL LIME</span><span className="image-note">Purpose in<br/>every placement.</span></div><span className="orbit" aria-hidden="true">START WITH<strong>the details.</strong><span>↗</span></span></motion.div>
       </section>
-      <div className="benefit-strip"><span>75% recycled polyester</span><b>✳</b><span>A little stretch. A lot of possibility.</span><b>✳</b><span>One layer, on repeat.</span></div>
-      <section className="everyday section" id="everyday">
-        <motion.div className="section-heading" {...reveal}><p className="eyebrow">02 / DRESS FOR YOUR WHOLE DAY</p><div><h2>New York doesn’t slow down.<br/><em>Your outfit can keep up.</em></h2><p>The best pieces earn their place in your rotation.<br/>Here are three ways to make this one yours.</p></div></motion.div>
-        <div className="day-grid">
-          <div className="day-tabs" role="tablist" aria-label="Ways to style the Wellfleet">{moments.map((m,i)=><button key={m.time} id={`day-tab-${i}`} role="tab" aria-selected={moment===i} aria-controls="day-panel" tabIndex={moment===i ? 0 : -1} onClick={()=>setMoment(i)} onKeyDown={e=>{if(e.key==='ArrowDown'||e.key==='ArrowRight'||e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();const next=(i+(e.key==='ArrowDown'||e.key==='ArrowRight'?1:2))%3;setMoment(next);document.getElementById(`day-tab-${next}`)?.focus()}}} className={moment===i?'active':''}><span className="time">{m.time}</span><span>{m.name}</span><b>↗</b></button>)}</div>
-          <motion.div key={moment} initial={{opacity:.4}} animate={{opacity:1}} transition={{duration:reduce?0:.3}} className={`day-panel ${moments[moment].color}`} role="tabpanel" id="day-panel" aria-labelledby={`day-tab-${moment}`}><span className="eyebrow">{moments[moment].tag}</span><h3>{moments[moment].style}</h3><p>{moments[moment].text}</p><span className="panel-arrow" aria-hidden="true">↗</span><div className="palette" aria-label="Suggested outfit palette"><i/><i/><i/></div></motion.div>
-        </div>
+      <div className="benefit-strip"><span>Targeted pad placement</span><b>✳</b><span>Compression-style concept</span><b>✳</b><span>Athlete-informed development</span></div>
+      <section className="everyday section" id="everyday"><motion.div className="section-heading" {...reveal}><p className="eyebrow">02 / EXPLORE THE DESIGN</p><div><h2>Start with the overlooked.<br/><em>Think through every detail.</em></h2><p>Select a design priority to explore<br/>what makes this concept different.</p></div></motion.div>
+        <div className="day-grid"><div className="day-tabs" role="tablist" aria-label="Product design priorities">{features.map((f,i)=><button key={f.name} id={`day-tab-${i}`} role="tab" aria-selected={moment===i} aria-controls="day-panel" tabIndex={moment===i?0:-1} onClick={()=>setMoment(i)} onKeyDown={e=>{let next=i;if(['ArrowDown','ArrowRight','ArrowUp','ArrowLeft','Home','End'].includes(e.key)){e.preventDefault();next=e.key==='Home'?0:e.key==='End'?2:(i+(['ArrowDown','ArrowRight'].includes(e.key)?1:2))%3;setMoment(next);document.getElementById(`day-tab-${next}`)?.focus()}}} className={moment===i?'active':''}><span className="time">0{i+1}</span><span>{f.name}</span><b>↗</b></button>)}<div className="design-caption">A concept to explore.<br/>A performance promise to earn.</div></div>
+          <div className={`day-panel ${features[moment].color}`} role="tabpanel" id="day-panel" aria-labelledby={`day-tab-${moment}`} tabIndex={0}><span className="eyebrow">{features[moment].tag}</span><Shirt selected={moment}/><h3>{features[moment].title}</h3><p>{features[moment].text}</p></div></div>
       </section>
-      <section className="detail-section" id="story">
-        <div className="detail-photo"><img src={IMAGE} alt="A closer look at the Wellfleet half-zip collar and white Google logo" loading="lazy" width="1500" height="1500"/><span>THE BEAUTY IS IN THE EVERYDAY DETAILS.</span></div>
-        <motion.div className="detail-copy" {...reveal}><p className="eyebrow">03 / MORE THAN A GOOD LOOK</p><h2>Simple on the outside.<br/><em>Thoughtful throughout.</em></h2><div className="feature"><span>01</span><div><h3>Room to move</h3><p>A spacer-knit blend with 7% spandex brings stretch to a full day of getting around.</p></div></div><div className="feature"><span>02</span><div><h3>Ready for your daily rotation</h3><p>Odor-fighting fabric and ribbed cuffs and hem give this everyday layer practical details.</p></div></div><div className="feature"><span>03</span><div><h3>A considered composition</h3><p>Made with 75% recycled polyester, 18% rayon, and 7% spandex. A familiar favorite with a thoughtful fabric blend.</p></div></div><a className="text-link" href={PRODUCT} target="_blank" rel="noreferrer">Explore full product details <span>↗</span></a></motion.div>
-      </section>
-      <section className="closer section">
-        <motion.div {...reveal}><p className="eyebrow">LESS “WHAT SHOULD I WEAR?”</p><h2>More <em>“I’m on my way.”</em></h2><p>One navy half-zip. So many ways to make it your own.<br/>Start with the original Google Wellfleet Women’s 1/2 Zip.</p><a className="button" href={PRODUCT} target="_blank" rel="noreferrer">Shop the Wellfleet · $79 <span>↗</span></a><p className="micro">Continue to the Google Merchandise Store for sizes, availability, and current pricing.</p></motion.div>
-      </section>
-      <section className="project-notes section" aria-label="Relaunch strategy">
-        <details><summary><span>Behind the relaunch</span><span>THE MARKETING STRATEGY <b>+</b></span></summary><div className="strategy-grid"><div><p className="eyebrow">THE STARTING POINT</p><h3>A product worth another look.</h3><p>The supplied ecommerce report recorded $0 item revenue and 0 purchases. Two possible barriers: a $79 price that needs a clearer value story, and plain product presentation that doesn’t show how the piece fits into everyday life. These are hypotheses, not proven causes.</p></div><div><p className="eyebrow">THE CUSTOMER</p><h3>A full life in the Northeast.</h3><p><strong>Geographic:</strong> New York and the Northeast.<br/><strong>Demographic:</strong> Women ages 25–34.<br/><strong>Behavioral:</strong> Chrome users who browse online.<br/><strong>Benefits sought:</strong> Versatile styling and everyday comfort.</p><p>Our focus: a woman around 30 living in New York who wants an easy layer for her workday and time off. Chrome usage is a channel clue; versatility is the reason to buy.</p></div><div><p className="eyebrow">THE NEW POSITION</p><h3>Same product. A clearer purpose.</h3><p>Reframe the simple navy design as versatile, communicate the verified material details, and show three styling occasions to make its value tangible. Color lives in the website’s presentation; the garment and its white logo stay original.</p></div></div></details>
-      </section>
+      <section className="detail-section" id="story"><div className="detail-photo research-art"><p className="eyebrow">FROM THE RINK TO THE DRAWING BOARD</p><h2>Fit.<br/>Feel.<br/><em>Follow-through.</em></h2><div className="research-line"/><p>Good equipment starts<br/>with better questions.</p><span>LUKE RYAN / VENTURE WORKSPACE</span></div><motion.div className="detail-copy" {...reveal}><p className="eyebrow">03 / THE THINKING BEHIND CLAV</p><h2>Listen first.<br/><em>Build with purpose.</em></h2><div className="feature"><span>01</span><div><h3>Made with contact-sport athletes in mind</h3><p>The initial audience is athletes ages 12–30, across genders, with a focus on hockey in the US and Canada. The mission: explore a more considered layer beneath their equipment.</p></div></div><div className="feature"><span>02</span><div><h3>Fit is part of the product</h3><p>Early research into sports undershirts highlighted inconsistent compression, tight sizing, and sleeve and neckline proportions. Those concerns shape the proposed fit trials.</p></div></div><div className="feature"><span>03</span><div><h3>Value needs evidence</h3><p>Clear product details, thoughtful pricing, and testing come before big promises. The final price, materials, and pad construction are still to be determined.</p></div></div><a className="text-link" href="#research">Read the research context <span>↓</span></a></motion.div></section>
+      <section className="closer section" id="explore"><motion.div {...reveal}><p className="eyebrow">04 / YOUR GAME. YOUR PRIORITIES.</p><h2>What matters <em>in your first layer?</em></h2><p>Explore a direction for the concept.<br/>Choose your sport and the detail you’d want tested first.</p><div className="concept-controls"><label>Your sport<select value={sport} onChange={e=>{setSport(e.target.value);setSaved(false)}}><option>Hockey</option><option>Lacrosse</option><option>Football</option><option>Other contact sport</option></select></label><label>Your priority<select value={priority} onChange={e=>{setPriority(e.target.value);setSaved(false)}}><option>Fit under equipment</option><option>Pad comfort and placement</option><option>Washability and durability</option><option>Price and value</option></select></label></div><div className="concept-result" aria-live="polite"><span className="eyebrow">YOUR EXPLORATION</span><h3>{sport} / {priority}</h3><p>{priority==='Fit under equipment'?'Start with movement and layering trials to understand how the shirt fits with sport-specific equipment.':priority==='Pad comfort and placement'?'Compare pad positions and constructions during movement, then evaluate performance through independent testing.':priority==='Washability and durability'?'Compare fixed and removable pads through repeated washing and wear trials.':'Explore what athletes value, then compare proposed pricing with production costs and tested performance.'}</p></div><button className="button" onClick={download}>Download your concept brief <span>↓</span></button><p className="micro" role="status">{saved?'Your concept brief was downloaded. Nothing was submitted.':'Selections stay on this page. No signup, order, or personal information required.'}</p></motion.div></section>
+      <section className="project-notes section" id="research" aria-label="Research and development context"><details><summary><span>Behind the venture</span><span>RESEARCH & NEXT STEPS <b>+</b></span></summary><div className="strategy-grid"><div><p className="eyebrow">THE INPUT</p><h3>Listen to the category.</h3><p>The venture workspace reports a sample of 50 Amazon sports-undershirt observations. Fit, compression, proportions, and perceived value informed the concept. This small category sample does not establish demand for CLAV.</p></div><div><p className="eyebrow">THE IDEAS</p><h3>Questions worth testing.</h3><p>An AI-simulated focus group raised ideas about fit trials, size exchanges, pricing, and fixed versus removable pads. These are fictional participant responses, not real customer testimonials or evidence of product effectiveness.</p></div><div><p className="eyebrow">THE NEXT STEP</p><h3>Prototype. Evaluate. Refine.</h3><p>Validate pad placement, fit, durability, and impact performance before making protection claims. This is a student venture concept; injury prevention has not been established. The proposed undershirt is not a replacement for required sports equipment.</p></div></div></details></section>
     </main>
-    <footer><a className="brand" href="#main">wellfleet.</a><span>An independent student marketing concept.<br/>Google trademarks and product imagery belong to their respective owners.</span><a href={PRODUCT} target="_blank" rel="noreferrer">Original product & details ↗</a><a href="#main">Back to top ↑</a></footer>
+    <footer><a className="brand" href="#main">clav.</a><span>A sportswear venture concept by Luke Ryan.<br/>Working brand and product illustration. Not available for purchase.</span><a href="#research">Research & development ↗</a><a href="#main">Back to top ↑</a></footer>
   </>
 }
